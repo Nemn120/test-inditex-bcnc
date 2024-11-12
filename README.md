@@ -5,7 +5,7 @@
 
 ### Estado del código
 
-
+[![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=Nemn120_test-inditex-bcnc&metric=alert_status)](https://sonarcloud.io/summary/new_code?id=Nemn120_test-inditex-bcnc)
 ### Tecnologías necesarias
 
 `Java 17` `Spring Boot` `Spring Data` `MapStruct` `Gradle` `JUnit5` `Mockito` `Sonarcloud`
