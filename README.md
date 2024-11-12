@@ -3,12 +3,30 @@
 > Aplicación para gestionar precios de productos basados en fechas específicas.
 > La implementación ha sido realizada utilizando arquitectura hexagonal basado en casos de uso.
 
+## Tabla de Contenidos
+- [Estado del Código](#estado-del-código)
+- [Tecnologías necesarias](#tecnologías-necesarias)
+- [Instalación del Proyecto](#instalación-del-proyecto)
+- [Funcionalidades](#funcionalidades)
+- [Ejecución](#ejecución)
+- [Pruebas](#pruebas)
+- [Estructura del Proyecto](#estructura-del-proyecto)
+- [Diagrama de Arquitectura plantuml](#diagrama-de-arquitectura-plantuml)
+- [Contacto](#contacto)
+
+
 ### Estado del código
 [![DevOps](https://github.com/Nemn120/test-inditex-bcnc/actions/workflows/build.yml/badge.svg)](https://github.com/Nemn120/test-inditex-bcnc/actions/workflows/build.yml)
 [![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=Nemn120_test-inditex-bcnc&metric=alert_status)](https://sonarcloud.io/summary/new_code?id=Nemn120_test-inditex-bcnc)
 ### Tecnologías necesarias
 
 `Java 17` `Spring Boot` `Spring Data` `MapStruct` `Gradle` `JUnit5` `Mockito` `Sonarcloud`
+
+### Arquitectura Hexagonal
+La aplicación está diseñada siguiendo principios de arquitectura hexagonal:
+- **Domain**: Contiene las entidades centrales y las reglas de negocio.
+- **Application**: Define puertos (interfaces) y servicios de aplicación para la lógica de negocio.
+- **Infrastructure**: Implementa los adaptadores de entrada/salida, incluyendo controladores REST y repositorios.
 
 ### Instalación del proyecto
 
@@ -76,7 +94,7 @@ Ejecutar los test:
 ```
 
 ### Estructura del Proyecto
-
+#### Arbol de directorio
 ```bash
  \---com.achavez.bcnc.inditextest.product
 		    +---application
@@ -134,6 +152,9 @@ Ejecutar los test:
                                 SwaggerConfig.java
 
 ```
+#### Diagrama de arquitectura plantuml
+![Diagrama de Arquitectura](docs/architecture.png)
+
 
 ## Contacto
 
