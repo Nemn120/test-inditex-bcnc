@@ -1,0 +1,25 @@
+
+spring:
+  application:
+    name: test-inditex-bcnc
+  datasource:
+    url: jdbc:h2:mem:test-inditext
+    username: sa
+    password: password
+    driverClassName: org.h2.Driver
+  h2:
+    console:
+      enabled: true
+  sql:
+    init:
+      mode: always
+  jpa:
+    hibernate:
+      ddl-auto: none
+logging:
+  level:
+    org:
+      springframework:
+        web: info
+      hibernate:
+        SQL: debug
