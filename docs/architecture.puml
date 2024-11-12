@@ -1,10 +1,10 @@
 @startuml
 
-package "product:application.port.in" {
+package "product:application.port:in" {
         interface GetPriceProductByDateUseCase<<port>>
 }
 
-package "product:infrastructure:adapter.in:rest:controller" {
+package "product:infrastructure:adapter:in:rest:controller" {
         class GetPriceProductByDateController  {}
          GetPriceProductByDateController --> GetPriceProductByDateUseCase
 }
@@ -15,13 +15,13 @@ package "product:application.service" {
 
 }
 
-package "product:application.port.out" {
+package "product:application.port:out" {
         interface PriceRepository<<port>>
 
         GetPriceProductByDateService --> PriceRepository
 }
 
-package "product:infrastructure:adapter.out:persistence:db:jpa:repository" {
+package "product:infrastructure:adapter:out:persistence:db.jpa:repository" {
         class PriceJpaRepository  {}
         interface PriceSpringDataRepository  {}
 
