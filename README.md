@@ -4,7 +4,7 @@
 > La implementación ha sido realizada utilizando arquitectura hexagonal basado en casos de uso.
 
 ### Estado del código
-[![SonarQube Cloud](https://github.com/Nemn120/test-inditex-bcnc/actions/workflows/build.yml/badge.svg)](https://github.com/Nemn120/test-inditex-bcnc/actions/workflows/build.yml)
+[![DevOps](https://github.com/Nemn120/test-inditex-bcnc/actions/workflows/build.yml/badge.svg)](https://github.com/Nemn120/test-inditex-bcnc/actions/workflows/build.yml)
 [![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=Nemn120_test-inditex-bcnc&metric=alert_status)](https://sonarcloud.io/summary/new_code?id=Nemn120_test-inditex-bcnc)
 ### Tecnologías necesarias
 
