@@ -5,16 +5,16 @@
 
 ## Tabla de Contenidos
 
-- [Integración Continua y calidad de Código](#integración-continua-y-calidad-de-código)
+- [Integración continua y calidad de código](#integración-continua-y-calidad-de-código)
 - [Tecnologías necesarias](#tecnologías-necesarias)
 - [Arquitectura Hexagonal](#arquitectura-hexagonal)
-- [Instalación del Proyecto](#instalación-del-proyecto)
+- [Instalación del proyecto](#instalación-del-proyecto)
 - [Funcionalidades](#funcionalidades)
 - [Ejecución](#ejecución)
 - [Ejecución API](#ejecución-api)
 - [Pruebas](#pruebas)
-- [Estructura del Proyecto](#estructura-del-proyecto)
-- [Diagrama de Arquitectura plantuml](#diagrama-de-arquitectura-plantuml)
+- [Estructura del proyecto](#estructura-del-proyecto)
+- [Diagrama de arquitectura plantuml](#diagrama-de-arquitectura-plantuml)
 - [Contacto](#contacto)
 
 ### Integración Continua y calidad de Código
@@ -22,7 +22,8 @@
 [![DevOps](https://github.com/Nemn120/test-inditex-bcnc/actions/workflows/build.yml/badge.svg)](https://github.com/Nemn120/test-inditex-bcnc/actions/workflows/build.yml)
 [![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=Nemn120_test-inditex-bcnc&metric=alert_status)](https://sonarcloud.io/summary/new_code?id=Nemn120_test-inditex-bcnc)
 
-El proyecto utiliza GitHub Actions para el despliegue continuo y SonarCloud para medir la calidad del código y la cobertura. 
+El proyecto utiliza GitHub Actions para el despliegue continuo y SonarCloud para medir la calidad del código y la
+cobertura.
 
 ### Tecnologías necesarias
 
@@ -30,18 +31,9 @@ El proyecto utiliza GitHub Actions para el despliegue continuo y SonarCloud para
 
 ### Arquitectura Hexagonal
 
-- **Domain**: Contiene las reglas de negocio. Independiente a cualquier dependencia externa.
-- **Application**: Define puertos (interfaces) y servicios de aplicación para la lógica de negocio. Los puertos de
-  entrada son definidos mediante casos de uso y los servicios implementan los casos de uso. Los puertos de salida en el
-  proyecto
-- **Infrastructure**: Implementa los adaptadores de entrada/salida, incluyendo controladores REST y repositorios. Se
-  utiliza MapStruct para la conversion de entidad de dominio a DTO o entidad de Jpa.
-
-## Arquitectura Hexagonal del Proyecto
-
 La aplicación está diseñada siguiendo principios de arquitectura hexagonal, utilizando las siguientes capas:
 
-### 1. Dominio (`domain`)
+#### 1. Dominio (`domain`)
 
 La capa de dominio contiene las entidades de dominio y las reglas de negocio independiente a cualquier dependencia
 externa.
@@ -54,7 +46,7 @@ externa.
     - `DomainValidationException.java`: Maneja excepciones de validación del dominio.
     - `PriceNotFoundException.java`: Excepción lanzada cuando no se encuentra un precio específico.
 
-### 2. Aplicación (`application`)
+#### 2. Aplicación (`application`)
 
 Esta capa orquesta el flujo de trabajo entre la capa de dominio y la capa de infraestructura.
 
@@ -70,7 +62,7 @@ Esta capa orquesta el flujo de trabajo entre la capa de dominio y la capa de inf
     - `GetPriceProductByDateService.java`: Implementa el caso de uso de consulta de precios y se conecta
       a `PriceRepository` para acceder a los datos.
 
-### 3. Infraestructura (`infrastructure`)
+#### 3. Infraestructura (`infrastructure`)
 
 Esta capa contiene los **adaptadores de entrada y salida** que interactúan con tecnologías externas, como REST o la base
 de datos.
@@ -87,6 +79,13 @@ de datos.
         - `repository`: `PriceJpaRepository.java` implementa el puerto `PriceRepository`
             - `PriceSpringDataRepository.java` Se utiliza para realizar operaciones CRUD en `PriceJpaRepository.java`.
         - `mapper`: `PriceJpaMapper.java` convierte las entidades JPA en entidades de dominio.
+
+
+- **Configuración (`config`)**:
+    - `ApplicationServiceConfig.java`: Crea los beans de la capa aplicacion como `GetPriceProductByDateService`.
+    - `SpringBootRun.java`: Contiene la configuración para el arranque de la aplicación asi como el escaneo de las
+      entidades, repositorios y beans.
+    - `SwaggerConfig.java`: Configuración de Swagger para la documentación de la API.
 
 ### Instalación del proyecto
 
@@ -114,6 +113,7 @@ de datos.
     - Si hay más de un precio con la misma prioridad, se lanza un error.
 
 ### Ejecución
+
 #### Ejecutar
 
 Para levantar el proyecto es necesario Java17 y Gradle 7.3 como mínimo. Puede ejecutarlo directamente desde el IDE.
@@ -121,11 +121,14 @@ Para levantar el proyecto es necesario Java17 y Gradle 7.3 como mínimo. Puede e
 ```
 ./gradlew bootRun
 ```
+
 #### Ejecutar imagen
+
 ```
 docker build -t test-inditex .
 docker run -p 8080:8080 test-inditex
 ```
+
 ### Ejecución API
 
 #### Request:
@@ -134,34 +137,52 @@ docker run -p 8080:8080 test-inditex
 curl --location 'http://localhost:8080/api/v1/prices/brand/1/product/35455?applicationDate=2020-06-14T10:00:00.000-05:00'
 ```
 
+#### Swagger:
+
+```
+http://localhost:8080/swagger-ui.html
+```
+
 #### Response:
 
 ```json
 
 {
-    "productId": 35455,
-    "brandId": 1,
-    "priceList": 1,
-    "startDate": "2020-06-14T00:00:00",
-    "endDate": "2020-12-31T23:59:59",
-    "finalPrice": "35.50 €"
+  "productId": 35455,
+  "brandId": 1,
+  "priceList": 1,
+  "startDate": "2020-06-14T00:00:00",
+  "endDate": "2020-12-31T23:59:59",
+  "finalPrice": "35.50 €"
 }
 ```
 
 ### Pruebas
+
+Existen distintas manera de resolver la prueba. Una de las soluciones mas optimas seria una consulta mas elaborada y
+delegar mayor responsabilidad a la BD. Sin embargo consideré oportuno realizar una consulta base a partir de los datos
+ingresados y
+delegar al dominio la decisión de retornar el precio con mayor prioridad. Esta elección me permitio probar distintos
+escenarios
+independientes de la base de datos con la facilidad de agregar mas criterios enriqueciendo el dominio.
 
 - Las cinco pruebas del enunciado están desarrolladas en la clase de test GetPriceProductByDateControllerTest.
 - Adicional a ello tambien se realizó las pruebas en las distintas capas de la arquitectura.
 - Para los servicios rest se utilizó WebTestClient. La configuración está centralizada en la anotación @RestTestConfig
 - Para los servicios de la capa de aplicación se utilizó Mockito con Junit.
 
-Ejecutar los test:
+#### Ejecutar los test:
 
 ```
 ./gradlew test
 ```
 
-### Estructura del Proyecto
+#### Ejecutar solicitudes HTTP con los 5 test de la prueba
+
+Para probar los endpoints de la API que contiene los cinco test de la prueba. Puedes ejecutar directamente el archivo
+[`test-prices.http`](./docs/test-prices.http) desde el Intellij.
+
+### Estructura del proyecto
 
 #### Arbol de directorio
 
