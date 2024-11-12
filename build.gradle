@@ -63,6 +63,6 @@ dependencies {
     implementation 'org.mapstruct:mapstruct:1.6.3'
     annotationProcessor 'org.projectlombok:lombok', 'org.mapstruct:mapstruct-processor:1.6.3'
 
-    implementation group: 'org.springdoc', name: 'springdoc-openapi-starter-webmvc-ui', version: '2.6.0'
+    implementation("org.springdoc:springdoc-openapi-starter-webflux-ui:2.0.4")
     testImplementation group: 'io.projectreactor', name: 'reactor-test', version: '3.6.10'
 }
