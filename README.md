@@ -4,29 +4,89 @@
 > La implementación ha sido realizada utilizando arquitectura hexagonal basado en casos de uso.
 
 ## Tabla de Contenidos
-- [Estado del Código](#estado-del-código)
+
+- [Integración Continua y calidad de Código](#integración-continua-y-calidad-de-código)
 - [Tecnologías necesarias](#tecnologías-necesarias)
+- [Arquitectura Hexagonal](#arquitectura-hexagonal)
 - [Instalación del Proyecto](#instalación-del-proyecto)
 - [Funcionalidades](#funcionalidades)
 - [Ejecución](#ejecución)
+- [Ejecución API](#ejecución-api)
 - [Pruebas](#pruebas)
 - [Estructura del Proyecto](#estructura-del-proyecto)
 - [Diagrama de Arquitectura plantuml](#diagrama-de-arquitectura-plantuml)
 - [Contacto](#contacto)
 
+### Integración Continua y calidad de Código
 
-### Estado del código
 [![DevOps](https://github.com/Nemn120/test-inditex-bcnc/actions/workflows/build.yml/badge.svg)](https://github.com/Nemn120/test-inditex-bcnc/actions/workflows/build.yml)
 [![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=Nemn120_test-inditex-bcnc&metric=alert_status)](https://sonarcloud.io/summary/new_code?id=Nemn120_test-inditex-bcnc)
+
+El proyecto utiliza GitHub Actions para el despliegue continuo y SonarCloud para medir la calidad del código y la cobertura. 
+
 ### Tecnologías necesarias
 
 `Java 17` `Spring Boot` `Spring Data` `MapStruct` `Gradle` `JUnit5` `Mockito` `Sonarcloud`
 
 ### Arquitectura Hexagonal
-La aplicación está diseñada siguiendo principios de arquitectura hexagonal:
-- **Domain**: Contiene las entidades centrales y las reglas de negocio.
-- **Application**: Define puertos (interfaces) y servicios de aplicación para la lógica de negocio.
-- **Infrastructure**: Implementa los adaptadores de entrada/salida, incluyendo controladores REST y repositorios.
+
+- **Domain**: Contiene las reglas de negocio. Independiente a cualquier dependencia externa.
+- **Application**: Define puertos (interfaces) y servicios de aplicación para la lógica de negocio. Los puertos de
+  entrada son definidos mediante casos de uso y los servicios implementan los casos de uso. Los puertos de salida en el
+  proyecto
+- **Infrastructure**: Implementa los adaptadores de entrada/salida, incluyendo controladores REST y repositorios. Se
+  utiliza MapStruct para la conversion de entidad de dominio a DTO o entidad de Jpa.
+
+## Arquitectura Hexagonal del Proyecto
+
+La aplicación está diseñada siguiendo principios de arquitectura hexagonal, utilizando las siguientes capas:
+
+### 1. Dominio (`domain`)
+
+La capa de dominio contiene las entidades de dominio y las reglas de negocio independiente a cualquier dependencia
+externa.
+
+- **Entidades de dominio**:
+    - `Price.java`, `Currency.java`
+
+- **Excepciones y Mensajes de Error**:
+    - `DomainErrorMessage.java`: Define mensajes de error específicos para el dominio.
+    - `DomainValidationException.java`: Maneja excepciones de validación del dominio.
+    - `PriceNotFoundException.java`: Excepción lanzada cuando no se encuentra un precio específico.
+
+### 2. Aplicación (`application`)
+
+Esta capa orquesta el flujo de trabajo entre la capa de dominio y la capa de infraestructura.
+
+- **Puertos (`port`)**
+    - `port.in`: Interfaces de entrada, como `GetPriceProductByDateUseCase.java`, que representa un caso de uso para
+      obtener un precio de producto en una fecha específica.
+    - `port.out`: Interfaces de salida, como `PriceRepository.java`, que actúa como contrato para el acceso a los datos
+      de precios.
+
+
+- **Servicios de Aplicación (`service`)**: Implementan la lógica de los casos de uso y dependen de los puertos para
+  interactuar con la infraestructura:
+    - `GetPriceProductByDateService.java`: Implementa el caso de uso de consulta de precios y se conecta
+      a `PriceRepository` para acceder a los datos.
+
+### 3. Infraestructura (`infrastructure`)
+
+Esta capa contiene los **adaptadores de entrada y salida** que interactúan con tecnologías externas, como REST o la base
+de datos.
+
+- **Adaptadores de Entrada (`adapter.in`)**: Permiten que el sistema reciba peticiones externas.
+    - `rest.controller`: `GetPriceProductByDateController.java` expone un endpoint REST para consultar precios.
+    - `dto`: Clases para exponer datos para la API como `ProductPriceRateResponseDTO.java` ,
+    - `mapper`: `PriceRestMapper.java` convierte las entidades del dominio en DTOs.
+
+
+- **Adaptadores de Salida (`adapter.out`)**: Conectan la aplicación con dependencias externas.
+    - `persistence.db.jpa`: Implementa la persistencia con JPA para la BD.
+        - `entity`: Define las entidades JPA (`PriceJpaEntity.java`).
+        - `repository`: `PriceJpaRepository.java` implementa el puerto `PriceRepository`
+            - `PriceSpringDataRepository.java` Se utiliza para realizar operaciones CRUD en `PriceJpaRepository.java`.
+        - `mapper`: `PriceJpaMapper.java` convierte las entidades JPA en entidades de dominio.
 
 ### Instalación del proyecto
 
@@ -54,12 +114,19 @@ La aplicación está diseñada siguiendo principios de arquitectura hexagonal:
     - Si hay más de un precio con la misma prioridad, se lanza un error.
 
 ### Ejecución
+#### Ejecutar
 
-Para levantar el proyecto es necesario Java17 y Gradle 7.3 como mínimo. Puede ejecutarlo directamente desde el IDE. 
+Para levantar el proyecto es necesario Java17 y Gradle 7.3 como mínimo. Puede ejecutarlo directamente desde el IDE.
 
 ```
 ./gradlew bootRun
 ```
+#### Ejecutar imagen
+```
+docker build -t test-inditex .
+docker run -p 8080:8080 test-inditex
+```
+### Ejecución API
 
 #### Request:
 
@@ -69,9 +136,7 @@ curl --location 'http://localhost:8080/api/v1/prices/brand/1/product/35455?appli
 
 #### Response:
 
-```
-HTTP/1.1 200 OK
-Content-Type: application/json
+```json
 
 {
     "productId": 35455,
@@ -82,19 +147,24 @@ Content-Type: application/json
     "finalPrice": "35.50 €"
 }
 ```
+
 ### Pruebas
-- Las cinco pruebas del enunciado están desarrolladas en la clase de test GetPriceProductByDateControllerTest. 
+
+- Las cinco pruebas del enunciado están desarrolladas en la clase de test GetPriceProductByDateControllerTest.
 - Adicional a ello tambien se realizó las pruebas en las distintas capas de la arquitectura.
-- Para los servicios rest se utilizó WebTestClient. La configuración está centralizada en la anotación @RestTestConfig 
+- Para los servicios rest se utilizó WebTestClient. La configuración está centralizada en la anotación @RestTestConfig
 - Para los servicios de la capa de aplicación se utilizó Mockito con Junit.
 
 Ejecutar los test:
+
 ```
 ./gradlew test
 ```
 
 ### Estructura del Proyecto
+
 #### Arbol de directorio
+
 ```bash
  \---com.achavez.bcnc.inditextest.product
 		    +---application
@@ -152,11 +222,12 @@ Ejecutar los test:
                                 SwaggerConfig.java
 
 ```
-#### Diagrama de arquitectura plantuml
-![Diagrama de Arquitectura](docs/architecture.png)
 
+#### Diagrama de arquitectura plantuml
+
+![Diagrama de Arquitectura](docs/architecture.png)
 
 ## Contacto
 
-[![image](https://img.shields.io/badge/LinkedIn-0077B5?style=for-the-badge&logo=linkedin&logoColor=white)](https://www.linkedin.com/in/fernando-chavez-chavez/) 
+[![image](https://img.shields.io/badge/LinkedIn-0077B5?style=for-the-badge&logo=linkedin&logoColor=white)](https://www.linkedin.com/in/fernando-chavez-chavez/)
 [![image](https://img.shields.io/badge/GitHub-100000?style=for-the-badge&logo=github&logoColor=white)](https://github.com/Nemn120/)
