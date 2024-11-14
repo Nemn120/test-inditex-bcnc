@@ -7,7 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 import java.time.LocalDateTime;
 import java.time.Month;
-import java.util.List;
+import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
@@ -24,13 +24,12 @@ class PriceJpaRepositoryTest {
         Long productId = 35455L;
         LocalDateTime applicationDate = LocalDateTime.of(2020, Month.JUNE, 14, 10, 0);
 
-        List<Price> prices = priceJpaRepository.findByBrandIdAndProductIdAndDate(
+        Optional<Price> optionalPrice = priceJpaRepository.findTopWithHighestPriority(
                 brandId, productId, applicationDate);
 
-        assertFalse(prices.isEmpty());
-        Price price = prices.get(0);
-        assertEquals(brandId, price.brandId());
-        assertEquals(productId, price.productId());
-        assertEquals(1L, price.priceList());
+        assertFalse(optionalPrice.isEmpty());
+        assertEquals(brandId, optionalPrice.get().brandId());
+        assertEquals(productId, optionalPrice.get().productId());
+        assertEquals(1L, optionalPrice.get().priceList());
     }
 }

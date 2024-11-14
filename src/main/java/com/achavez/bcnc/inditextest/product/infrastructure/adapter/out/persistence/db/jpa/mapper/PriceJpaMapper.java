@@ -4,13 +4,16 @@ import com.achavez.bcnc.inditextest.product.domain.Price;
 import com.achavez.bcnc.inditextest.product.infrastructure.adapter.out.persistence.db.jpa.entity.PriceJpaEntity;
 import org.mapstruct.Mapper;
 
-import java.util.List;
+import java.util.Optional;
 
 @Mapper(componentModel = "spring")
 public interface PriceJpaMapper {
 
-    List<Price> toDomain(List<PriceJpaEntity> priceJpaEntity);
 
     Price toDomain(PriceJpaEntity priceJpaEntity);
+
+    default Optional<Price> toDomain(Optional<PriceJpaEntity> price){
+        return price.map(this::toDomain);
+    }
 
 }

@@ -21,10 +21,6 @@ public record Price(
         }
     }
 
-    public boolean equalsPriority(Integer priority){
-        return this.priority.equals(priority);
-    }
-
     public boolean isDateInRange(LocalDateTime date) {
         return isBeforeOrEqualTo(date) && isAfterOrEqualTo(date);
     }
