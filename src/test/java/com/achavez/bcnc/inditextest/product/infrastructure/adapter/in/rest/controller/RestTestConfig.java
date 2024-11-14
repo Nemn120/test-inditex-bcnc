@@ -2,7 +2,7 @@ package com.achavez.bcnc.inditextest.product.infrastructure.adapter.in.rest.cont
 
 import com.achavez.bcnc.inditextest.product.infrastructure.config.SpringBootRun;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.springframework.boot.test.autoconfigure.web.reactive.AutoConfigureWebTestClient;
+import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
@@ -16,6 +16,6 @@ import java.lang.annotation.Target;
 @ExtendWith(SpringExtension.class)
 @SpringBootTest(classes = SpringBootRun.class,
         webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
-@AutoConfigureWebTestClient
+@AutoConfigureMockMvc
 public @interface RestTestConfig {
 }

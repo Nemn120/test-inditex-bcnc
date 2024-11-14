@@ -168,7 +168,7 @@ independientes de la base de datos con la facilidad de agregar mas criterios enr
 
 - Las cinco pruebas del enunciado están desarrolladas en la clase de test GetPriceProductByDateControllerTest.
 - Adicional a ello tambien se realizó las pruebas en las distintas capas de la arquitectura.
-- Para los servicios rest se utilizó WebTestClient. La configuración está centralizada en la anotación @RestTestConfig
+- Para los servicios rest se utilizó MockMvc. La configuración está centralizada en la anotación @RestTestConfig
 - Para los servicios de la capa de aplicación se utilizó Mockito con Junit.
 
 #### Ejecutar los test:
